@@ -9,18 +9,16 @@ import {
   AlertTriangle,
   Lightbulb,
   Calendar,
-  MessageSquare,
-  Copy,
-  Check,
   ChevronDown,
   ChevronUp,
+  ShieldCheck,
+  ArrowRight,
 } from "lucide-react";
 import { useState } from "react";
 
 export default function AuditPage() {
   const { id } = useParams<{ id: string }>();
   const biz = businesses.find((b) => b.id === id);
-  const [copiedPitch, setCopiedPitch] = useState(false);
   const [expandedWeakness, setExpandedWeakness] = useState<number | null>(null);
 
   if (!biz) {
@@ -36,12 +34,6 @@ export default function AuditPage() {
     );
   }
 
-  const handleCopyPitch = () => {
-    navigator.clipboard.writeText(biz.dmPitch);
-    setCopiedPitch(true);
-    setTimeout(() => setCopiedPitch(false), 2000);
-  };
-
   const overallLabel =
     biz.overallScore >= 70
       ? "Good"
@@ -49,9 +41,14 @@ export default function AuditPage() {
       ? "Needs Work"
       : "Critical";
 
+  const serviceFocus = [
+    "Visibility cleanup",
+    "Search and profile optimization",
+    "Website and conversion improvements",
+  ];
+
   return (
     <div className="min-h-screen" style={{ background: "#0F1117", fontFamily: "DM Sans, sans-serif" }}>
-      {/* Sticky Header */}
       <header
         className="sticky top-0 z-50 border-b"
         style={{
@@ -87,7 +84,6 @@ export default function AuditPage() {
       </header>
 
       <div className="container py-10 max-w-5xl mx-auto">
-        {/* Hero Section */}
         <div
           className="rounded-2xl p-8 mb-8"
           style={{
@@ -96,7 +92,6 @@ export default function AuditPage() {
           }}
         >
           <div className="flex flex-col md:flex-row md:items-start gap-8">
-            {/* Left: Info */}
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-3">
                 <span className="text-3xl">{biz.categoryIcon}</span>
@@ -128,7 +123,6 @@ export default function AuditPage() {
               </div>
             </div>
 
-            {/* Right: Overall Score */}
             <div className="flex flex-col items-center gap-3">
               <ScoreRing score={biz.overallScore} size={130} strokeWidth={11} color={biz.accentColor} />
               <div className="text-center">
@@ -146,7 +140,6 @@ export default function AuditPage() {
             </div>
           </div>
 
-          {/* Big picture */}
           <div
             className="mt-6 pt-6"
             style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}
@@ -155,7 +148,6 @@ export default function AuditPage() {
           </div>
         </div>
 
-        {/* Score Cards */}
         <section className="mb-8">
           <h2
             className="text-lg font-bold text-white mb-4"
@@ -180,7 +172,6 @@ export default function AuditPage() {
           </div>
         </section>
 
-        {/* Weaknesses */}
         <section className="mb-8">
           <div className="flex items-center gap-2 mb-4">
             <AlertTriangle size={16} style={{ color: "#f87171" }} />
@@ -222,7 +213,9 @@ export default function AuditPage() {
                     className="px-4 pb-4 text-white/60 text-sm leading-relaxed"
                     style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
                   >
-                    <p className="pt-3">{w.description}</p>
+                    <p className="pt-3">
+                      This is a visibility and conversion issue that can keep ready-to-buy customers from choosing {biz.name}. The full fix depends on the business profile, website setup, search competition, and customer journey, so it should be handled as part of a focused local growth plan rather than guessed at from a checklist.
+                    </p>
                   </div>
                 )}
               </div>
@@ -230,7 +223,6 @@ export default function AuditPage() {
           </div>
         </section>
 
-        {/* Biggest Opportunity */}
         <section className="mb-8">
           <div
             className="rounded-2xl p-6"
@@ -254,7 +246,6 @@ export default function AuditPage() {
           </div>
         </section>
 
-        {/* 90-Day Plan */}
         <section className="mb-8">
           <div className="flex items-center gap-2 mb-4">
             <Calendar size={16} style={{ color: "#FF6B35" }} />
@@ -262,7 +253,7 @@ export default function AuditPage() {
               className="text-lg font-bold text-white"
               style={{ fontFamily: "Space Grotesk, sans-serif" }}
             >
-              90-Day Action Plan
+              90-Day Service Roadmap
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -288,18 +279,13 @@ export default function AuditPage() {
                       className="text-white font-semibold text-sm"
                       style={{ fontFamily: "Space Grotesk, sans-serif" }}
                     >
-                      {p.title}
+                      {serviceFocus[i] || p.title}
                     </div>
                   </div>
                 </div>
-                <ul className="space-y-2 mb-4">
-                  {p.actions.map((a) => (
-                    <li key={a} className="flex items-start gap-2 text-white/60 text-xs">
-                      <span className="mt-1 w-1 h-1 rounded-full bg-white/30 flex-shrink-0" />
-                      {a}
-                    </li>
-                  ))}
-                </ul>
+                <p className="text-white/58 text-xs leading-relaxed mb-4">
+                  A done-for-you service phase focused on diagnosing the root issue, setting priorities, implementing the right improvements, and tracking whether visibility and engagement are moving in the right direction.
+                </p>
                 <div
                   className="pt-3 text-xs font-semibold"
                   style={{
@@ -315,42 +301,39 @@ export default function AuditPage() {
           </div>
         </section>
 
-        {/* DM Pitch */}
         <section className="mb-10">
-          <div className="flex items-center gap-2 mb-4">
-            <MessageSquare size={16} style={{ color: "#FF6B35" }} />
-            <h2
-              className="text-lg font-bold text-white"
-              style={{ fontFamily: "Space Grotesk, sans-serif" }}
-            >
-              Soft DM Pitch
-            </h2>
-          </div>
           <div
-            className="rounded-2xl p-6 relative"
+            className="rounded-2xl p-6 md:p-7"
             style={{
-              background: "rgba(255,255,255,0.04)",
-              border: "1px solid rgba(255,255,255,0.08)",
+              background: "linear-gradient(135deg, rgba(255,107,53,0.14), rgba(255,255,255,0.04))",
+              border: "1px solid rgba(255,107,53,0.28)",
             }}
           >
-            <p className="text-white/70 leading-relaxed text-sm whitespace-pre-wrap pr-12">
-              {biz.dmPitch}
-            </p>
-            <button
-              onClick={handleCopyPitch}
-              className="absolute top-4 right-4 p-2 rounded-lg transition-all duration-200 hover:bg-white/10"
-              style={{ color: copiedPitch ? "#4ade80" : "rgba(255,255,255,0.4)" }}
-              title="Copy pitch"
-            >
-              {copiedPitch ? <Check size={15} /> : <Copy size={15} />}
-            </button>
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+              <div className="flex items-start gap-3">
+                <ShieldCheck size={22} style={{ color: "#FF6B35" }} className="mt-1 flex-shrink-0" />
+                <div>
+                  <h2 className="text-white text-xl font-bold mb-2" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+                    Want this handled for your business?
+                  </h2>
+                  <p className="text-white/65 text-sm leading-relaxed max-w-2xl">
+                    This report shows where the online presence is leaking attention. The implementation is where the real lift happens — Google profile cleanup, local SEO, website copy, conversion paths, content, photos, reputation signals, and monthly tracking.
+                  </p>
+                </div>
+              </div>
+              <Link href="/pricing">
+                <button
+                  className="inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold text-white transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
+                  style={{ background: "#FF6B35", fontFamily: "Space Grotesk, sans-serif" }}
+                >
+                  See service options
+                  <ArrowRight size={15} />
+                </button>
+              </Link>
+            </div>
           </div>
-          <p className="text-white/30 text-xs mt-2 ml-1">
-            Click the copy icon to copy this pitch to your clipboard
-          </p>
         </section>
 
-        {/* Navigation to other audits */}
         <section>
           <h2
             className="text-lg font-bold text-white mb-4"
@@ -395,7 +378,6 @@ export default function AuditPage() {
         </section>
       </div>
 
-      {/* Footer */}
       <footer
         className="border-t py-8 mt-10"
         style={{ borderColor: "rgba(255,255,255,0.08)" }}

@@ -12,8 +12,10 @@ function Routes() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/show-me-mexico-small-business" component={Home} />
       <Route path="/audit/:id" component={AuditPage} />
       <Route path="/pricing" component={Pricing} />
+      <Route path="/show-me-mexico-small-business/pricing" component={Pricing} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>
